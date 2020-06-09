@@ -8,18 +8,30 @@ using SalesWebMvc.Models;
 
 namespace SalesWebMvc.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : Controller // HomeController = A caminho da URL vai conter a palavra "Home"
     {
-        public IActionResult Index()
-        {
+        // Cada um dos nomes dos métodos abaixo representa a própria ação
+        public IActionResult Index() // IActionResult = Resultado de uma ação. ASPNET fortemente baseado em padrões de nomes
+        {                            // IActionResult é uma interface de um super tipo genérico para todo resultado de alguma ação
+                                     // View() retorna um objeto do tipo "ViewResult" que pode substituir o "IActionResult" que é mais genérico
             return View();
         }
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
+            ViewData["Message"] = "Salles Web MVC App from C# Course."; // Acessa um objeto "ViewData" na chave "Message" e recebe um valor
+            // "ViewData"= Dicionário do c#. Coleção de chaves pares-chaves-valor
+            ViewData["Aluno"] = " : Agnaldo Marlon Rodrigues"; // Acréscimo de valor ao ViewData através da chave "Email"
+            return View(); // View() método auxiliar (meta de builder) para retornar um objeto do tipo "IActionResult", neste caso uma view
+            /* 
+             * Ação do framework: se está sendo instanciada uma view e está em uma ação about, o framework vai procurar na pasta "Views"
+             * na subpasta "Home" (nome do controlador: HomeController) uma página com o nome "About".
+             * Esta página About é que vai ser construída com o template Engine do framework.
+             * As chaves "Message" e "Email" precisão ser declaradas na página About.
+             * O sistema de template processará o template "About" em "Home" e trocará as referências das chaves pelos
+             * valores deste controlador
+             * Natural Templates: quando é digitado o camimho no navegador (URL) o controlador que será chamado e depois as páginas (em home) 
+             */
         }
 
         public IActionResult Contact()
