@@ -1,0 +1,43 @@
+﻿@model IEnumerable<SalesWebMvc.Models.Department>
+
+@{
+    ViewData["Title"] = "Departments"; // Alterado o valor "Index"
+}
+
+    <h2>Departments</h2> @* Alterado o valor "Index"*@
+
+<p>
+    <a asp-action="Create">Create New</a> @*asp-action = cria um link apontando para a ação "Create" deste mesmo 
+                                              controlador: Departments que chamou esta página*@
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id) @* Expressão lambda = Nome do cabeçalho da Tabela Departments *@ 
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) { @* "item" = nome (apelido) da VAR para percorrer a lista de Departments
+                                   "Model" = Pega da coleção do controlador no início desta página: @model... *@
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id) @* Expressão lambda = Linhas da Tabela Departments *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |@* Link para uma ação específica *@
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

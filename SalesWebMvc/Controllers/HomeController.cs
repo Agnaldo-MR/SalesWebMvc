@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SalesWebMvc.Models;
+using SalesWebMvc.Models.ViewModels;
 
 namespace SalesWebMvc.Controllers
 {
@@ -30,7 +30,7 @@ namespace SalesWebMvc.Controllers
              * As chaves "Message" e "Email" precisão ser declaradas na página About.
              * O sistema de template processará o template "About" em "Home" e trocará as referências das chaves pelos
              * valores deste controlador
-             * Natural Templates: quando é digitado o camimho no navegador (URL) o controlador que será chamado e depois as páginas (em home) 
+             * Natural Templates: quando é digitado o camimho no navegador (URL) o controlador é que será chamado e depois as páginas (em home) 
              */
         }
 
