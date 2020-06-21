@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using SalesWebMvc.Models;
+using SalesWebMvc.Data;
 
 namespace SalesWebMvc
 {
@@ -39,16 +40,22 @@ namespace SalesWebMvc
             services.AddDbContext<SalesWebMvcContext>(options =>
                     options.UseMySql(Configuration.GetConnectionString("SalesWebMvcContext"), builder => 
                     builder.MigrationsAssembly("SalesWebMvc"))); // "SalesWebMvcContext" = mesmo nome da classe em "Data"
-        }                                                        // "SalesWebMvc" = nome do assembly (Projeto)
+                                                                 // "SalesWebMvc" = nome do assembly (Projeto)
+
+            services.AddScoped<SeedingService>(); // "services" = argumento do método atual
+                                                  // Para registrar o serviço no sistema de injeção de dependência da aplicação
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, SeedingService seedingService)
+        { // Acrescido o parâmetro seedingService, que estando a classe registrada no sistema de injeção de dependência da aplicação, 
+          // a instância do objeto é automaticamente resolvida (iniciada)
+            if (env.IsDevelopment()) // Se estiver no perfil de desenvolvimento faça
             {
                 app.UseDeveloperExceptionPage();
+                seedingService.Seed(); // Chamada do método em "SeedingService" para popular a BD, se não estiver ("if").
             }
-            else
+            else // Senão, se estiver no perfil de produção faça. Se já foi publicado o aplicativo...
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
