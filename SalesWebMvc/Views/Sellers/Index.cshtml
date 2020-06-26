@@ -1,8 +1,56 @@
-﻿
+﻿@model IEnumerable<SalesWebMvc.Models.Seller>
+
+@*Declara-se o objeto "@model" que corresponde ao objeto "list" que foi passado como argumento em SellerControler.cs
+    no método "View" que no caso é uma lista de Seller. Declara-se tb o tipo do objeto um IEnumerable (coleção mais genérica)
+    que aceita lista, conjunto... Este tipo será uma lista de Seller *@
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Sellers";
 }
 
-<h2>Sellers</h2>
+<h2>@ViewData["Title"]</h2> @*Link para o título*@
 
-<p>Sallers index page</p>
+<table class="table table-striped table-hover">
+    <thead> @*Cabeçalho*@
+        <tr class="success"> @*Alterar a côr*@
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BirthDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BaseSalary)
+            </th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+
+    <tbody> @*Corpo da tabela*@
+        @foreach (var item in Model)
+        {
+        <tr>@*Linhas*@            
+            <td>@*Colunas*@                
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BirthDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BaseSalary)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit -</a>                
+                <a asp-action="Details" asp-route-id="@item.Id">Details -</a>                
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

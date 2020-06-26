@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SalesWebMvc.Services;
 
 /* Observações:
  * Quando é acionado o link "Sellers" no navegador, a chamada é recebida por esta classe do controlador
@@ -15,9 +16,19 @@ namespace SalesWebMvc.Controllers
 {
     public class SellersController : Controller
     {
+        private readonly SellerService _sellerService;
+
+        public SellersController(SellerService sellerService)
+        {
+            _sellerService = sellerService;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            var list = _sellerService.FindAll(); // VAR lista de Seller
+            return View(list); // View("list") passa o argumento para gerar uma IActionResult contendo a list
+                               // É chamado o controlador "Index", o controlador acessa o "Model", 
+                               // pega o dado na list e encaminha para a View e acontece a dinâmica do MVC.
         }
     }
 }
