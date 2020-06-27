@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SalesWebMvc.Models;
 using SalesWebMvc.Services;
 
 /* Observações:
@@ -29,6 +30,19 @@ namespace SalesWebMvc.Controllers
             return View(list); // View("list") passa o argumento para gerar uma IActionResult contendo a list
                                // É chamado o controlador "Index", o controlador acessa o "Model", 
                                // pega o dado na list e encaminha para a View e acontece a dinâmica do MVC.
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] // Para evitar ataque na seção de autenticação com dados maliciosos
+        public IActionResult Create(Seller seller)
+        {
+            _sellerService.Insert(seller);
+            return RedirectToAction(nameof(Index)); // Para redirecionar depois de enviar o Form ao BD. Poderia ser só ("Index")
         }
     }
 }

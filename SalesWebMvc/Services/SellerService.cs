@@ -20,5 +20,11 @@ namespace SalesWebMvc.Services
             return _context.Seller.ToList(); // Para retornar do BD todos os vendedores.
                                              // "Seller"=acessa a tabela "vendedores" e converte para uma lista (ToList)
         }
+
+        public void Insert(Seller obj) //Insere formulário de Create.cshtml no BD
+        {
+            _context.Add(obj);
+            _context.SaveChanges(); // Salvar no BD
+        }
     }
 }
