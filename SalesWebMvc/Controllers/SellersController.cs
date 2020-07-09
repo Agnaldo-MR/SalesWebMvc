@@ -37,12 +37,12 @@ namespace SalesWebMvc.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost] // Annotation para indicar que a ação abaixo vai ser uma ação de "Post" e não de "Get" 
         [ValidateAntiForgeryToken] // Para evitar ataque na seção de autenticação com dados maliciosos
         public IActionResult Create(Seller seller)
         {
             _sellerService.Insert(seller);
-            return RedirectToAction(nameof(Index)); // Para redirecionar depois de enviar o Form ao BD. Poderia ser só ("Index")
+            return RedirectToAction(nameof(Index)); // Para redirecionar depois de enviar o Form ao BD. Poderia ser só (RedirectToAction("Index"))
         }
     }
 }

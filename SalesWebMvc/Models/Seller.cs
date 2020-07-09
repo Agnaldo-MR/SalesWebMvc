@@ -11,7 +11,8 @@ namespace SalesWebMvc.Models
         public string Email { get; set; }
         public DateTime BirthDate { get; set; }
         public double BaseSalary { get; set; }
-        public Department Department { get; set; } // Associação cada "Saller" possui um "Department"
+        public Department Department { get; set; } // Associação cada "Seller" possui um "Department"
+        public int DepartmentId { get; set; }
         public ICollection<SalesRecord> Sales { get; set; } = new List<SalesRecord>(); // Associação de um "Seller" para vários "SalesRecord"
 
         public Seller()
