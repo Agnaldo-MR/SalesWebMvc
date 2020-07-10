@@ -1,5 +1,4 @@
-﻿@model SalesWebMvc.Models.Seller
-
+﻿@model SalesWebMvc.Models.ViewModels.SellerFormViewModel
 @*
     Declaração acima diz que a View tem à disposição dela o objeto Seller. Como um "using"
 
@@ -22,24 +21,32 @@
         <form asp-action="Create">
             @*Define que quando enviar o formulário, irá chamar a ação Create no método post no controlador*@
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Seller.Name" class="control-label"></label>
                 @*TagHelper que define o label para digitar a informação. Campo: Name da classe Seller*@
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Seller.Name" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
+                <label asp-for="Seller.Email" class="control-label"></label>
                 @*TagHelper que define o label para digitar a informação. Campo: Name da classe Seller*@
-                <input asp-for="Email" class="form-control" />
+                <input asp-for="Seller.Email" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="BirthDate" class="control-label"></label>
+                <label asp-for="Seller.BirthDate" class="control-label"></label>
                 @*TagHelper que define o label para digitar a informação. Campo: Name da classe Seller*@
-                <input asp-for="BirthDate" class="form-control" />
+                <input asp-for="Seller.BirthDate" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="BaseSalary" class="control-label"></label>
+                <label asp-for="Seller.BaseSalary" class="control-label"></label>
                 @*TagHelper que define o label para digitar a informação. Campo: Name da classe Seller*@
-                <input asp-for="BaseSalary" class="form-control" />
+                <input asp-for="Seller.BaseSalary" class="form-control" />
+            </div>
+            @*select=caixa de seleção do html - TagHelper asp-items = constroe os intens ca caixa de seleção com base
+                em uma coleção informada. Tem 3 argumentos = 
+                Fonte de dados(lista de departamentos do viewModels), a chave do  obj "Id" e o atributo visível "Name"*@
+            <div class="form-group">
+                <label asp-for="Seller.DepartmentId" class="control-label"></label>
+                <select asp-for="Seller.DepartmentId" asp-items="@(new SelectList(Model.Departments,"Id",
+                                                                    "Name"))" class="form-control"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />

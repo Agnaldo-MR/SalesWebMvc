@@ -23,6 +23,7 @@ namespace SalesWebMvc.Services
 
         public void Insert(Seller obj) //Insere formulário de Create.cshtml no BD
         {
+            //obj.Department = _context.Department.First(); // Provisório para não ficar sem departamento. Desativado, pois, já existe a seleção de departamentos
             _context.Add(obj);
             _context.SaveChanges(); // Salvar no BD
         }
