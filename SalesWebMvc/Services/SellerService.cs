@@ -27,5 +27,18 @@ namespace SalesWebMvc.Services
             _context.Add(obj);
             _context.SaveChanges(); // Salvar no BD
         }
+
+        public Seller FindById(int id) // Retrona o vendedor com o id solicitado. Se não existir retorna null
+        {
+            return _context.Seller.FirstOrDefault(obj => obj.Id == id); // Operação linq
+        }
+
+        public void Remove(int id) // Deleta o vendedor
+        {
+            var obj = _context.Seller.Find(id);
+            _context.Seller.Remove(obj); // Remove o objeto do DBSet. Foi feito uma alteração
+            _context.SaveChanges(); // Confirma a alteração para efetivação no BD pelo entitie framework 
+
+        }
     }
 }

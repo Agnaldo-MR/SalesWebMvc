@@ -49,5 +49,29 @@ namespace SalesWebMvc.Controllers
             _sellerService.Insert(seller);
             return RedirectToAction(nameof(Index)); // Para redirecionar depois de enviar o Form ao BD. Poderia ser só (RedirectToAction("Index"))
         }
+
+        public IActionResult Delete(int? id) // "?" para indicar que é opcional
+        {
+            if(id == null) // Se for null a requisição foi feita de forma indevida
+            {
+                return NotFound(); // Para um resposta básica
+            }
+
+            var obj = _sellerService.FindById(id.Value); // Para pegar o valor caso exista "?"
+            if (obj == null)
+            {
+                return NotFound(); // Para um resposta básica
+            }
+
+            return View(obj);
+        }
+
+        [HttpPost] // Annotation para indicar que a ação abaixo vai ser uma ação de "Post" e não de "Get" 
+        [ValidateAntiForgeryToken] // Para evitar ataque na seção de autenticação com dados maliciosos
+        public IActionResult Delete (int id)
+        {
+            _sellerService.Remove(id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
