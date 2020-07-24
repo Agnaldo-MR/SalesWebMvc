@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SalesWebMvc.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace SalesWebMvc.Services
 {
@@ -28,10 +29,10 @@ namespace SalesWebMvc.Services
             _context.SaveChanges(); // Salvar no BD
         }
 
-        public Seller FindById(int id) // Retrona o vendedor com o id solicitado. Se não existir retorna null
+        public Seller FindById(int id) // Retorna o vendedor com o id solicitado. Se não existir retorna null
         {
-            return _context.Seller.FirstOrDefault(obj => obj.Id == id); // Operação linq
-        }
+            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id); // Operação linq
+        }                          // Join para vincular a classe Department
 
         public void Remove(int id) // Deleta o vendedor
         {
