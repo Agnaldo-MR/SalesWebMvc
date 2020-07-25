@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SalesWebMvc.Models;
 using SalesWebMvc.Models.ViewModels;
 using SalesWebMvc.Services;
+using SalesWebMvc.Services.Exceptions;
 
 /* Observações:
  * Quando é acionado o link "Sellers" no navegador, a chamada é recebida por esta classe do controlador
@@ -88,6 +89,48 @@ namespace SalesWebMvc.Controllers
             }
 
             return View(obj);
+        }
+
+        public IActionResult Edit(int? id) // int? para evitar acontecer algum erro de execução
+        {
+            if(id == null) // Testa se Id não existe
+            {
+                return NotFound(); // Provisório. O correto é retornar uma página personalizada de erro
+            }
+
+            var obj = _sellerService.FindById(id.Value); // Objeto buscado no BD
+            if (obj == null) // Testa se Id é nulo
+            {
+                return NotFound();
+            }
+
+            List<Department> departments = _departmentService.FindAll();
+            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
+            return View(viewModel);
+        }
+
+        [HttpPost] // Annotation para indicar que a ação abaixo vai ser uma ação de "Post" e não de "Get" 
+        [ValidateAntiForgeryToken] // Para evitar ataque na seção de autenticação com dados maliciosos
+        public IActionResult Edit(int id, Seller seller)
+        {
+            if (id != seller.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _sellerService.Update(seller);
+                return RedirectToAction(nameof(Index)); // Para redirecionar depois de enviar o Form ao BD. Poderia ser só (RedirectToAction("Index"))
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
         }
     }
 }

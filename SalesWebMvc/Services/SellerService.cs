@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SalesWebMvc.Models;
 using Microsoft.EntityFrameworkCore;
+using SalesWebMvc.Services.Exceptions;
 
 namespace SalesWebMvc.Services
 {
@@ -40,6 +41,23 @@ namespace SalesWebMvc.Services
             _context.Seller.Remove(obj); // Remove o objeto do DBSet. Foi feito uma alteração
             _context.SaveChanges(); // Confirma a alteração para efetivação no BD pelo entitie framework 
 
+        }
+
+        public void Update(Seller obj)
+        {
+            if (!_context.Seller.Any(x => x.Id == obj.Id)) // Testar se o ID existe ou não no BD. Se não existir faça
+            {
+                throw new NotFoundException("Id not found (Id não encontrado)");
+            }
+            try
+            {
+            _context.Update(obj); // Se não entrar na exceção irá atualizar
+            _context.SaveChanges(); // Confirmar os dados
+            }
+            catch(DbUpdateConcurrencyException e)
+            {
+                throw new DbConcurrencyException(e.Message);
+            }
         }
     }
 }
