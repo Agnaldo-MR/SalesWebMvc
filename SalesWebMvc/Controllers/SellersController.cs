@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -55,13 +56,15 @@ namespace SalesWebMvc.Controllers
         {
             if(id == null) // Se for null a requisição foi feita de forma indevida
             {
-                return NotFound(); // Para um resposta básica
+                //return NotFound(); // Para um resposta básica
+                return RedirectToAction(nameof(Error), new { message = "Id not provided (Id não fornecido)"});
             }
 
             var obj = _sellerService.FindById(id.Value); // Para pegar o valor caso exista "?"
             if (obj == null)
             {
-                return NotFound(); // Para um resposta básica
+                //return NotFound(); // Para um resposta básica
+                return RedirectToAction(nameof(Error), new { message = "Id not found (Id não existe)" });
             }
 
             return View(obj);
@@ -75,17 +78,19 @@ namespace SalesWebMvc.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Details(int? id)
+        public IActionResult Details(int? id) // Ação de detalhe do seller
         {
             if (id == null) // Se for null a requisição foi feita de forma indevida
             {
-                return NotFound(); // Para um resposta básica
+                //return NotFound(); // Para um resposta básica
+                return RedirectToAction(nameof(Error), new { message = "Id not provided (Id não fornecido)" });
             }
 
             var obj = _sellerService.FindById(id.Value); // Para pegar o valor caso exista "?"
             if (obj == null)
             {
-                return NotFound(); // Para um resposta básica
+                //return NotFound(); // Para um resposta básica
+                return RedirectToAction(nameof(Error), new { message = "Id not found (Id não existe)" });
             }
 
             return View(obj);
@@ -95,13 +100,15 @@ namespace SalesWebMvc.Controllers
         {
             if(id == null) // Testa se Id não existe
             {
-                return NotFound(); // Provisório. O correto é retornar uma página personalizada de erro
+                //return NotFound(); // Provisório. O correto é retornar uma página personalizada de erro
+                return RedirectToAction(nameof(Error), new { message = "Id not provided (Id não fornecido)" });
             }
 
             var obj = _sellerService.FindById(id.Value); // Objeto buscado no BD
             if (obj == null) // Testa se Id é nulo
             {
-                return NotFound();
+                //return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found (Id não existe)" });
             }
 
             List<Department> departments = _departmentService.FindAll();
@@ -111,11 +118,12 @@ namespace SalesWebMvc.Controllers
 
         [HttpPost] // Annotation para indicar que a ação abaixo vai ser uma ação de "Post" e não de "Get" 
         [ValidateAntiForgeryToken] // Para evitar ataque na seção de autenticação com dados maliciosos
-        public IActionResult Edit(int id, Seller seller)
+        public IActionResult Edit(int id, Seller seller) // Ação de edição do seller
         {
             if (id != seller.Id)
             {
-                return BadRequest();
+                //return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "Id mismatch (Id`s não correspondem)" });
             }
 
             try
@@ -123,14 +131,31 @@ namespace SalesWebMvc.Controllers
                 _sellerService.Update(seller);
                 return RedirectToAction(nameof(Index)); // Para redirecionar depois de enviar o Form ao BD. Poderia ser só (RedirectToAction("Index"))
             }
-            catch (NotFoundException)
+            catch (NotFoundException e)
             {
-                return NotFound();
+                //return NotFound();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
-            catch (DbConcurrencyException)
+            catch (DbConcurrencyException e)
             {
-                return BadRequest();
+                //return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
+            /*Os dois catch`s acima pode ser substituído abaixo, pois, atende à ambas situações:
+             * 
+             * catch (ApplicationException e)
+             * return RedirectToAction(nameof(Error), new { message = e.Message });
+             */
+        }
+
+        public IActionResult Error(string message) // Ação de erro
+        {
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier // Recurso para pegar o ID interno da requisição
+            };
+            return View(viewModel);
         }
     }
 }
