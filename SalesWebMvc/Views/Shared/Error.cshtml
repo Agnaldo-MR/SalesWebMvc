@@ -3,10 +3,13 @@
     ViewData["Title"] = "Error (Erro)";
 }
 
-<h1 class="text-danger">@ViewData["Title"]</h1>@*Erro*@
-<h2 class="text-danger">@Model.Message</h2>@*Retorna mensagem da Classe: ErrorViewModel*@
+<h1 class="text-danger">@ViewData["Title"]</h1> @*Erro*@
+<h2 class="text-danger">@Model.Message</h2> @*Retorna mensagem da Classe: ErrorViewModel*@
 
-@if (Model.ShowRequestId)@*Se existir um RequestId*@
+@*Se existir um RequestId*@
+
+@if (Model.ShowRequestId)
+
 {
     <p>
         <strong>Request ID:</strong> <code>@Model.RequestId</code>@*Retornará o valor do RequestId*@

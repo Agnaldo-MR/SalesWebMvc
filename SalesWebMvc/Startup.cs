@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +56,18 @@ namespace SalesWebMvc
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, SeedingService seedingService)
         { // Acrescido o parâmetro seedingService, que estando a classe registrada no sistema de injeção de dependência da aplicação, 
           // a instância do objeto é automaticamente resolvida (iniciada)
+
+            // Configuração que define que o aplicativo terá como localização padrão o locale dos Estados Unidos
+            var enUS = new CultureInfo("en-US");
+            var localizationOptions = new RequestLocalizationOptions
+            { // Opções de localização
+                DefaultRequestCulture = new RequestCulture(enUS),
+                SupportedCultures = new List<CultureInfo> { enUS },
+                SupportedUICultures = new List<CultureInfo> { enUS }
+            };
+
+            app.UseRequestLocalization(localizationOptions); // Finalização do Locale
+            
             if (env.IsDevelopment()) // Se estiver no perfil de desenvolvimento faça
             {
                 app.UseDeveloperExceptionPage();
