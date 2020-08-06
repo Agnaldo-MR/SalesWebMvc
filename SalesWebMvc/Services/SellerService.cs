@@ -17,42 +17,48 @@ namespace SalesWebMvc.Services
             _context = context;
         }
 
-        public List<Seller> FindAll()
+        // public List<Seller> FindAll() // Síncrono
+        public async Task<List<Seller>> FindAllAsync() // Assíncrono
         {
-            return _context.Seller.ToList(); // Para retornar do BD todos os vendedores.
+            return await _context.Seller.ToListAsync(); // Para retornar do BD todos os vendedores.
                                              // "Seller"=acessa a tabela "vendedores" e converte para uma lista (ToList)
         }
 
-        public void Insert(Seller obj) //Insere formulário de Create.cshtml no BD
+        // public void Insert(Seller obj) // Síncrono
+        public async Task InsertAsync(Seller obj) //Insere formulário de Create.cshtml no BD // Assíncrono
         {
             //obj.Department = _context.Department.First(); // Provisório para não ficar sem departamento. Desativado, pois, já existe a seleção de departamentos
-            _context.Add(obj);
-            _context.SaveChanges(); // Salvar no BD
+            _context.Add(obj); // Realizada só na memória
+            await _context.SaveChangesAsync(); // Acessar e Salvar no BD // Assíncrona
         }
 
-        public Seller FindById(int id) // Retorna o vendedor com o id solicitado. Se não existir retorna null
+        // public Seller FindById(int id) // Síncrono
+        public async Task<Seller> FindByIdAsync(int id) // Retorna o vendedor com o id solicitado. Se não existir retorna null
         {
-            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id); // Operação linq
+            return await _context.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(obj => obj.Id == id); // Operação linq
         }                          // Join para vincular a classe Department
 
-        public void Remove(int id) // Deleta o vendedor
+        // public void Remove(int id) // Síncrono
+        public async Task RemoveAsync(int id) // Deleta o vendedor
         {
-            var obj = _context.Seller.Find(id);
+            var obj = await _context.Seller.FindAsync(id);
             _context.Seller.Remove(obj); // Remove o objeto do DBSet. Foi feito uma alteração
-            _context.SaveChanges(); // Confirma a alteração para efetivação no BD pelo entitie framework 
-
+            await _context.SaveChangesAsync(); // Confirma a alteração para efetivação no BD pelo entitie framework 
         }
 
-        public void Update(Seller obj)
+        // public void Update(Seller obj) // Síncrono
+        public async Task UpdateAsync(Seller obj)
         {
-            if (!_context.Seller.Any(x => x.Id == obj.Id)) // Testar se o ID existe ou não no BD. Se não existir faça
+            // if (!_context.Seller.Any(x => x.Id == obj.Id)) // Testar se o ID existe ou não no BD. Se não existir faça
+            bool hasAny = await _context.Seller.AnyAsync(x => x.Id == obj.Id);
+            if (!hasAny) // Testar se o ID existe ou não no BD. Se não existir faça
             {
                 throw new NotFoundException("Id not found (Id não encontrado)");
             }
             try
             {
             _context.Update(obj); // Se não entrar na exceção irá atualizar
-            _context.SaveChanges(); // Confirmar os dados
+            await _context.SaveChangesAsync(); // Confirmar os dados
             }
             catch(DbUpdateConcurrencyException e)
             {
