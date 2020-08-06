@@ -48,6 +48,13 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken] // Para evitar ataque na seção de autenticação com dados maliciosos
         public IActionResult Create(Seller seller)
         {
+            if (!ModelState.IsValid) // Testar se o modelo foi validado. Se o formulário de cadastro foi preenchido corretamente
+            { // Utilizado para validar os dados pelo servidor no caso do java script estar desabilitado no navegador do usuário
+                var departments = _departmentService.FindAll(); // Carregar os departamentos
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);
+            }
+
             _sellerService.Insert(seller);
             return RedirectToAction(nameof(Index)); // Para redirecionar depois de enviar o Form ao BD. Poderia ser só (RedirectToAction("Index"))
         }
@@ -120,6 +127,13 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken] // Para evitar ataque na seção de autenticação com dados maliciosos
         public IActionResult Edit(int id, Seller seller) // Ação de edição do seller
         {
+            if (!ModelState.IsValid) // Testar se o modelo foi validado. Se o formulário de cadastro foi preenchido corretamente
+            { // Utilizado para validar os dados pelo servidor no caso do java script estar desabilitado no navegador do usuário
+                var departments = _departmentService.FindAll(); // Carregar os departamentos
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);
+            }
+
             if (id != seller.Id)
             {
                 //return BadRequest();
