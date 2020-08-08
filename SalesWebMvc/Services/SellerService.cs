@@ -12,7 +12,7 @@ namespace SalesWebMvc.Services
     {
         private readonly SalesWebMvcContext _context; // "readonly" = para prevenir que esta dependência não possa ser alterada
 
-        public SellerService (SalesWebMvcContext context)
+        public SellerService(SalesWebMvcContext context)
         {
             _context = context;
         }
@@ -21,7 +21,7 @@ namespace SalesWebMvc.Services
         public async Task<List<Seller>> FindAllAsync() // Assíncrono
         {
             return await _context.Seller.ToListAsync(); // Para retornar do BD todos os vendedores.
-                                             // "Seller"=acessa a tabela "vendedores" e converte para uma lista (ToList)
+                                                        // "Seller"=acessa a tabela "vendedores" e converte para uma lista (ToList)
         }
 
         // public void Insert(Seller obj) // Síncrono
@@ -40,10 +40,20 @@ namespace SalesWebMvc.Services
 
         // public void Remove(int id) // Síncrono
         public async Task RemoveAsync(int id) // Deleta o vendedor
-        {
-            var obj = await _context.Seller.FindAsync(id);
-            _context.Seller.Remove(obj); // Remove o objeto do DBSet. Foi feito uma alteração
-            await _context.SaveChangesAsync(); // Confirma a alteração para efetivação no BD pelo entitie framework 
+        { // Interceptar a exceção DbUpdateException que será lançada pelo entity framework quando ocorrer uma violação
+          // de integridade referencial e lançar uma exceção personalizada no nível de serviço que a IntegrityException
+            try
+            {
+                var obj = await _context.Seller.FindAsync(id);
+                _context.Seller.Remove(obj); // Remove o objeto do DBSet. Foi feito uma alteração
+                await _context.SaveChangesAsync(); // Confirma a alteração para efetivação no BD pelo entitie framework
+            }
+            // catch(DbUpdateException e)
+            catch (DbUpdateException)
+            {
+                // throw new IntegrityException(e.Message);
+                throw new IntegrityException("Can`t delete seller because he/she has sales (Erro de integridade)"); // Personalizada
+            }
         }
 
         // public void Update(Seller obj) // Síncrono
@@ -57,10 +67,10 @@ namespace SalesWebMvc.Services
             }
             try
             {
-            _context.Update(obj); // Se não entrar na exceção irá atualizar
-            await _context.SaveChangesAsync(); // Confirmar os dados
+                _context.Update(obj); // Se não entrar na exceção irá atualizar
+                await _context.SaveChangesAsync(); // Confirmar os dados
             }
-            catch(DbUpdateConcurrencyException e)
+            catch (DbUpdateConcurrencyException e)
             {
                 throw new DbConcurrencyException(e.Message);
             }

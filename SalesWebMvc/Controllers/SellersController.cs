@@ -65,10 +65,10 @@ namespace SalesWebMvc.Controllers
         // public IActionResult Delete(int? id) // Síncrono
         public async Task<IActionResult> Delete(int? id) // "?" para indicar que é opcional
         {
-            if(id == null) // Se for null a requisição foi feita de forma indevida
+            if (id == null) // Se for null a requisição foi feita de forma indevida
             {
                 //return NotFound(); // Para um resposta básica
-                return RedirectToAction(nameof(Error), new { message = "Id not provided (Id não fornecido)"});
+                return RedirectToAction(nameof(Error), new { message = "Id not provided (Id não fornecido)" });
             }
 
             var obj = await _sellerService.FindByIdAsync(id.Value); // Para pegar o valor caso exista "?"
@@ -84,10 +84,17 @@ namespace SalesWebMvc.Controllers
         [HttpPost] // Annotation para indicar que a ação abaixo vai ser uma ação de "Post" e não de "Get" 
         [ValidateAntiForgeryToken] // Para evitar ataque na seção de autenticação com dados maliciosos
         // public IActionResult Delete (int id) // Síncrono
-        public async Task<IActionResult> Delete (int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            await _sellerService.RemoveAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _sellerService.RemoveAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (IntegrityException e)
+            {
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            }
         }
 
         // public IActionResult Details(int? id) // Síncrono
@@ -112,7 +119,7 @@ namespace SalesWebMvc.Controllers
         // public IActionResult Edit(int? id) // Síncrono 
         public async Task<IActionResult> Edit(int? id) // int? para evitar acontecer algum erro de execução
         {
-            if(id == null) // Testa se Id não existe
+            if (id == null) // Testa se Id não existe
             {
                 //return NotFound(); // Provisório. O correto é retornar uma página personalizada de erro
                 return RedirectToAction(nameof(Error), new { message = "Id not provided (Id não fornecido)" });
