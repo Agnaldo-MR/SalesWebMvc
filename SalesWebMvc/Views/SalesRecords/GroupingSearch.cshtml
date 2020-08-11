@@ -1,9 +1,10 @@
 ﻿@model IEnumerable<IGrouping<Department, SalesRecord>>
-@*Recebe uma coleção de SalesRecord*@
+@*Recebe uma coleção agrupada de Department com SalesRecord*@
 
 @{
     ViewData["Title"] = "Grouping Search";
     DateTime minDate = DateTime.Parse(ViewData["minDate"] as string);
+    // Declaração de variável com a data enviada pelo controlador fazendo um Casting para String e criando uma data à partir dele
     DateTime maxDate = DateTime.Parse(ViewData["maxDate"] as string);
 }
 
@@ -18,6 +19,7 @@
                     <label for="minDate">Min Date</label>
                     <input type="date" class="form-control" name="minDate" value=@ViewData["minDate"]>
                 </div>
+                @*Ajuste de datas*@
                 <div class="form-group">
                     <label for="maxDate">Max Date</label>
                     <input type="date" class="form-control" name="maxDate" value=@ViewData["maxDate"]>
@@ -28,15 +30,18 @@
     </div>
 </nav>
 
-@*Corpo da tabela*@
+@*Corpo da tabela. Como será um agrupamento necessita de dois foreach: lista de departamentos agrupados e vendas por dapartamento*@
 @foreach (var departmentGroup in Model)
 {
     <div class="panel panel-primary">
+        @*Painel*@
         <div class="panel-heading">
             <h3 class="panel-title">Department @departmentGroup.Key.Name, Total sales = @departmentGroup.Key.TotalSales(minDate, maxDate).ToString("F2")</h3>
+            @*No início de cada tabela vai retornar um sumário (cabeçalho) com o total das vendas*@
         </div>
         <div class="panel-body">
             <table class="table table-striped table-hover">
+                @*Tabela de vendas*@
                 <thead>
                     <tr class="success">
                         <th>
@@ -54,6 +59,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @*Vendas do Departamento do primeiro Foreach*@
                     @foreach (var item in departmentGroup)
                     {
                         <tr>
